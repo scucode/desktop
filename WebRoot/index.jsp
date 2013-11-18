@@ -10,6 +10,7 @@
 	
 	<link rel="stylesheet" type="text/css" href="/extjs/resources/css/ext-all.css" />
 	<link rel="stylesheet" type="text/css" href="/desktop/css/desktop.css" />
+	<link rel="stylesheet" type="text/css" href="/core/css/comm.css" />
 	<link rel="stylesheet" type="text/css" href="/extjs/shared/example.css">
 	<script type="text/javascript" src="/extjs/ext-all-debug.js"></script>
 	<script type="text/javascript" src="/extjs/shared/examples.js"></script>

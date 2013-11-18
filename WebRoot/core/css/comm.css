@@ -1,0 +1,152 @@
+.customers{
+	background-image: url(./image/customers.png) !important;
+}
+.address{
+	background-image: url(./image/address.png) !important;
+}
+.good{
+	background-image: url(./image/good.png) !important;
+}
+.goodtype{
+	background-image: url(./image/goodtype.png) !important;
+}
+.order{
+	background-image: url(./image/order.png) !important;
+}
+.order_detail{
+	background-image: url(./image/order_detail.png) !important;
+}
+.notice{
+	background-image: url(./image/notice.png) !important;
+}
+.feedback{
+	background-image: url(./image/feedback.png) !important;
+}
+.admin{
+	background-image: url(./image/admin.png) !important;
+}
+.icon_customers{
+    background-image: url(./image/icon_customer.png) !important;
+}
+.icon_customer{
+    background-image: url(./image/icon_customer.png) !important;
+}
+.icon_address{
+    background-image: url(./image/icon_address.png) !important;
+}
+.icon_good{
+    background-image: url(./image/icon_good.png) !important;
+}
+.icon_goodtype{
+    background-image: url(./image/icon_goodtype.png) !important;
+}
+.icon_order{
+    background-image: url(./image/icon_order.png) !important;
+}
+.icon_orderdetail{
+    background-image: url(./image/icon_orderdetail.png) !important;
+}
+.icon_notice{
+    background-image: url(./image/icon_notice.png) !important;
+}
+.icon_feedback{
+    background-image: url(./image/icon_feedback.png) !important;
+}
+.icon_table{
+    background-image: url(./image/icon_table.png) !important;
+}
+.icon_tree{
+    background-image: url(./image/icon_tree.png) !important;
+}
+.icon_system{
+    background-image: url(./image/icon_system.png) !important;
+}
+.icon_admin{
+    background-image: url(./image/icon_admin.png) !important;
+}
+.table_remove{
+	background-image: url(./image/table_remove.gif) !important;
+}
+.table_add{
+	background-image: url(./image/table_add.png) !important;
+}
+.table_edit{
+	background-image: url(./image/table_edit.png) !important;
+}
+.table_save{
+	background-image: url(./image/tabel_save.png) !important;
+}
+.system_edit{
+	background-image: url(./image/system_edit.png) !important;
+}
+.system_out{
+	background-image: url(./image/system_out.png) !important;
+}
+.system_cascade{
+	background-image: url(./image/system_cascade.png) !important;
+}
+.system_tile{
+	background-image: url(./image/system_tile.png) !important;
+}
+.search{
+	background-image: url(./image/search.gif) !important;
+}
+body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00B7FF;
+}
+.table_add {
+    background-image: url(./image/table/table_add.png) !important;
+}
+.table_remove {
+    background-image: url(./image/table/table_delete.png) !important;
+}
+.table_edit {
+    background-image: url(./image/table/table_edit.png) !important;
+}
+.table_save {
+    background-image: url(./image/table/table_save.png) !important;
+}
+.tree_model_add{
+    background-image: url(./image/tree/tree_model_add.png) !important;
+}
+.tree_folder_add{
+    background-image: url(./image/tree/tree_folder_add.png) !important;
+}
+.tree_func_add{
+    background-image: url(./image/tree/tree_func_add.png) !important;
+}
+.tree_root{
+    background-image: url(./image/tree/tree_root.png) !important;
+}
+.tree_delete{
+    background-image: url(./image/tree/tree_delete.png) !important;
+}
+.tree_ok{
+    background-image: url(./image/tree/tree_ok.png) !important;
+}
+.tree_user_add{
+    background-image: url(./image/tree/tree_user_add.png) !important;
+}
+.tree_user{
+    background-image: url(./image/tree/tree_user.png) !important;
+}
+.tree_role_add{
+    background-image: url(./image/tree/tree_role_add.png) !important;
+}
+.tree_role_delete{
+    background-image: url(./image/tree/tree_role_delete.png) !important;
+}
+.tree_role_see{
+    background-image: url(./image/tree/tree_role_see.png) !important;
+}
+.tree_perm_set{
+    background-image: url(./image/tree/tree_perm_set.png) !important;
+}
+.return{
+    background-image: url(./image/form/return.png) !important;
+}
