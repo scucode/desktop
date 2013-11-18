@@ -16,6 +16,6 @@ Ext.Loader.setConfig({
 //同步加载
 Ext.syncRequire([
 	"baseUx.form.datetime.DateTimePicker",
-    "baseUx.form.datetime.DateTime"
-    
+    "baseUx.form.datetime.DateTime",
+    "factory.ModelFactory"
 ]);

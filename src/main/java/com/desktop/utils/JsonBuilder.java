@@ -1,6 +1,7 @@
 package com.desktop.utils;
 
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.desktop.constant.ExtFieldType;
+import com.desktop.constant.StringVeriable;
+import com.desktop.model.ExtFieldVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -180,6 +184,58 @@ public class JsonBuilder {
 			sqls[i] = kk;
 		}
 		return sqls;
+	}
+
+	/**
+	 * 构建类的ExtJs的fields字段数据
+	 * 
+	 * @param modelName
+	 * @param fields
+	 * @param excludes
+	 * @return
+	 */
+	public String getModelFileds(String modelName, Field[] fields,
+			String excludes) {
+		List<ExtFieldVo> lists = new ArrayList<>();
+		for (Field f : fields) {
+			String[] excludesArray = excludes.split(StringVeriable.STR_SPLIT);
+			Boolean flag = false;
+			for (String exclude : excludesArray) {
+				if (f.equals(exclude)) {
+					flag = true;
+					break;
+				}
+			}
+			if (flag) {
+				continue;
+			}
+			String fieldType = f.getType().getSimpleName().toLowerCase();
+			Boolean excludeFlag = false;
+			if (fieldType.equals("double")) {
+				fieldType = ExtFieldType.FLOAT;
+			} else if (fieldType.equals("long")) {
+				fieldType = ExtFieldType.INT;
+			} else if (fieldType.equals("bigdecimal")) {
+				fieldType = ExtFieldType.INT;
+			} else if (fieldType.equals("timestamp")) {
+				fieldType = ExtFieldType.STRING;
+			} else if (fieldType.equals("date")) {
+				fieldType = ExtFieldType.STRING;
+			} else if (fieldType.equals("integer")) {
+				fieldType = ExtFieldType.INT;
+			} else if (fieldType.equals("string")) {
+				fieldType = ExtFieldType.STRING;
+			} else {
+				excludeFlag = true;
+			}
+			ExtFieldVo vo = new ExtFieldVo(f.getName(), fieldType);
+			if (!excludeFlag) {
+				lists.add(vo);
+			}
+		}
+		String strData = toJson(lists);
+		ModelUtil.modelJson.put(modelName, strData);
+		return strData;
 	}
 
 }

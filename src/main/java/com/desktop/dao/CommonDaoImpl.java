@@ -14,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.desktop.utils.StringUtil;
 
@@ -23,6 +24,7 @@ import com.desktop.utils.StringUtil;
  * @author wenyou <br />
  *         2013年11月18日 下午3:17:14
  */
+@Repository
 public class CommonDaoImpl implements CommonDao {
 
 	private HibernateTemplate hibernateTemplate;

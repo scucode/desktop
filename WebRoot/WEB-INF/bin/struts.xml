@@ -29,5 +29,11 @@
     	</interceptors>
    		<default-interceptor-ref name="defaultStack" />
     </package>    
-	 <include file="struts/struts-*.xml"/>
+    
+    <package name="pc" namespace="/pc" extends="pc-default">
+	 	<action name="modelAction" class="modelAction">
+	 		<result type="plainText" /> 
+	 	</action>
+    </package>
+	 <!-- <include file="struts/struts-*.xml"/> -->
 </struts>
