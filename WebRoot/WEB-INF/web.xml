@@ -12,9 +12,9 @@
   </context-param>
   
   <!--项目初始化监听器-->
-<!--   <listener>
+  <listener>
   	<listener-class>com.desktop.listener.ContextLintener</listener-class>
-  </listener> -->
+  </listener>
   
   <!-- 配置Spring的OpenSessionInViewFilter，以解决懒加载异常的问题 -->
   <filter>
