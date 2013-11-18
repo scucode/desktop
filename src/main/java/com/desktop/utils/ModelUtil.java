@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.desktop.annotation.FieldInfo;
+
 /**
  * 实体工具类
  * 
@@ -79,6 +81,25 @@ public class ModelUtil {
 		} else {
 			return;
 		}
+	}
+	
+	/**
+	 * 获取实体主键
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public static String getClassPkName(Class<?> clazz) {
+		Field[] fields = getClassFields(clazz, true);
+		String pkName = "";
+		for (Field f : fields) {
+			FieldInfo fieldInfo = f.getAnnotation(FieldInfo.class);
+			if (fieldInfo != null && "ID".equals(fieldInfo.type())) {
+				pkName = f.getName();
+				break;
+			}
+		}
+		return pkName;
 	}
 	
 }
