@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 指定国际化资源文件的baseName为globalMessages -->
+	<constant name="struts.custom.i18n.resources" value="globalMessages"/>	
+	<!-- 配置为开发模式 -->
+    <constant name="struts.devMode" value="true" />
+    <!-- 配置扩展名为do -->
+    <constant name="struts.action.extension" value="do" />
+    <!-- 配置主题 -->
+	<constant name="struts.ui.theme" value="simple" />
+	<!--允许使用动态函数机制-->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+
+    <package name="pc-default" namespace="/" extends="struts-default">
+    	<!--自定义拦截器-->
+    	<interceptors>
+    	<interceptor-stack name="defaultStack">
+            	<interceptor-ref name="exception">
+            		<param name="logEnabled">true</param>
+					<param name="logLevel">error</param>
+					<param name="logCategory">org.apache.commons.logging.impl.Log4JLogger</param>
+            	</interceptor-ref>
+            	<interceptor-ref name="defaultStack" />
+         	</interceptor-stack>
+    	</interceptors>
+   		<default-interceptor-ref name="defaultStack" />
+    </package>    
+	 <include file="struts/struts-*.xml"/>
+</struts>

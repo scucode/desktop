@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd">
+    
+    <!-- enable autowire -->
+    <context:annotation-config />
+    <!-- scan -->
+    <context:component-scan base-package="com.desktop" />
+    
+    <!-- 加载外部的properties配置文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+	
+    <!-- 配置数据库连接池（c3p0） -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<!-- 基本信息 -->
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="driverClass" value="${jdbc.driverClassName}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<!-- 其他配置 -->
+		<!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+		<property name="initialPoolSize" value="3"></property>
+		<!--连接池中保留的最小连接数。Default: 3 -->
+		<property name="minPoolSize" value="3"></property>
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize" value="5"></property>
+		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+		<property name="acquireIncrement" value="3"></property>
+		<!-- 控制数据源内加载的PreparedStatements数量。如果maxStatements与maxStatementsPerConnection均为0，则缓存被关闭。Default: 0 -->
+		<property name="maxStatements" value="8"></property>
+		<!-- maxStatementsPerConnection定义了连接池内单个连接所拥有的最大缓存statements数。Default: 0 -->
+		<property name="maxStatementsPerConnection" value="5"></property>
+		<!--最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime" value="1800"></property>
+	</bean>
+	
+	<!-- EHCACHE -->
+	<bean id="defaultCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">    
+		<property name="configLocation">    
+			<value>classpath:ehcache.xml</value>    
+		</property>    
+	</bean>    
+        
+	<!-- 定义ehCache的工厂，并设置所使用的Cache name -->    
+	<bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">    
+		<property name="cacheManager">    
+			<ref local="defaultCacheManager"/>    
+		</property>    
+		<property name="cacheName">    
+			<value>DEFAULT_CACHE</value>    
+		</property>    
+	</bean> 
+	
+	<!-- 配置SessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		 <property name="packagesToScan">
+			<list>
+				<value>com.*.model</value>
+				<value>com.*.*.model</value>
+				<value>com.*.*.*.model</value>
+				<value>com.*.*.model.view</value>
+			</list>
+		</property>
+		
+		
+		<!-- 	<property name="annotatedClasses">
+				 <list>
+					   <value>com.platform.menu.model.Menu</value>
+				 </list>
+			   </property> -->
+		 
+		<property name="hibernateProperties">
+			<props>
+				<!-- 
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop> 
+				-->
+				<!-- 定义数据库方言 -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+
+				<!-- 输出sql -->
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- 输出格式化的sql -->
+				<prop key="hibernate.format_sql">TRUE</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- 如果不想交spring管理事务就上这个代码
+						<prop key="hibernate.current_session_context_class">thread</prop>
+					--> 
+				<!--允许使用二级缓存-->
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<!--选择的缓存器是EhCache-->
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<!--允许使用查询缓存-->
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.connection.pool_size">2048</prop>		
+			</props>
+		</property>
+	</bean>
+	
+	<!--注入hibernateTemplate模板-->
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 配置声明式的事务管理（采用基于注解的方式） -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 用spring管理事务 -->
+	<!--
+	 <bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<aop:config>
+		<aop:pointcut id="bussinessService"
+			expression="(execution(public * com.desktop.service.*.*(..))) || (execution(public * com.desktop.security.*.*(..))) || (execution(public * com.desktop.**.service.*.*(..)))" />
+		<aop:advisor pointcut-ref="bussinessService"
+			advice-ref="txAdvice" />
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="exists" read-only="false" />
+			<tx:method name="add*" propagation="REQUIRED"/>
+			<tx:method name="*" propagation="REQUIRED"/>
+			<tx:method name="delete*" propagation="REQUIRED"/>
+			<tx:method name="cutOffIncidence" propagation="REQUIRED"/>
+			<tx:method name="Load*" propagation="REQUIRED"/>
+			<tx:method name="impEqTypeParams" propagation="REQUIRED"/>
+			<tx:method name="do*" propagation="REQUIRED"/>
+			<tx:method name="save*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice> -->
+</beans>
