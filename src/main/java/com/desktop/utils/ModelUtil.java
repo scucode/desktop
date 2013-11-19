@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.desktop.annotation.FieldInfo;
+import com.desktop.annotation.NodeType;
+import com.desktop.constant.TreeNodeType;
+import com.desktop.model.extjs.JSONTreeNode;
 
 /**
  * 实体工具类
@@ -100,6 +103,51 @@ public class ModelUtil {
 			}
 		}
 		return pkName;
+	}
+	
+	/**
+	 * 得到树形字段的模版类
+	 * @param c
+	 * @return
+	 */
+	public static JSONTreeNode getJSONTreeNodeTemplate(Class<?> c){
+		Field[] fields=getClassFields(c, false);
+		JSONTreeNode template=new JSONTreeNode();
+		for(Field f:fields){
+			NodeType nodeType=f.getAnnotation(NodeType.class);
+			if(nodeType==null){
+				continue;
+			}
+			if(TreeNodeType.ID.equalsType(nodeType.type())){
+				template.setId(f.getName());
+			}
+			if(TreeNodeType.TEXT.equalsType(nodeType.type())){
+				template.setText(f.getName());
+			}
+			if(TreeNodeType.CODE.equalsType(nodeType.type())){
+				template.setCode(f.getName());
+			}
+			if(TreeNodeType.ICON.equals(nodeType.type())) {
+				template.setIcon(f.getName());
+			}
+			if(TreeNodeType.NODEINFO.equals(nodeType.type())) {
+				template.setNodeInfo(f.getName());
+			}
+			if(TreeNodeType.NODEINFOTYPE.equals(nodeType.type())) {
+				template.setNodeInfoType(f.getName());
+			}
+			if(TreeNodeType.CLS.equals(nodeType.type())) {
+				template.setCls(f.getName());
+			}
+			if(TreeNodeType.LEAF.equals(nodeType.type())) {
+				// 根据NODETYPE
+				template.setNodeType(f.getName());
+			}
+			if(TreeNodeType.PARENT.equals(nodeType.type())) {
+				template.setParent(f.getName());
+			}
+		}
+		return template;
 	}
 	
 }

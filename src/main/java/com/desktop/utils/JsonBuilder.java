@@ -9,6 +9,8 @@ import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.CycleDetectionStrategy;
 
 import com.desktop.constant.ExtFieldType;
 import com.desktop.constant.StringVeriable;
@@ -184,6 +186,34 @@ public class JsonBuilder {
 			sqls[i] = kk;
 		}
 		return sqls;
+	}
+	
+	/**
+	 * 构建对象json数据[{},{},{}]
+	 * @param values
+	 * @param excludes
+	 * @return
+	 */
+	public String buildList(List<?> values,String excludes){
+		StringBuffer returnJson = new StringBuffer("[");
+		for(Object obj:values){
+			//声明json配置对象
+			JsonConfig cfg = new JsonConfig();
+			String[] excluds=excludes.split(",");
+			if(excluds.length>0){
+				//增加排除属性数组
+				cfg.setExcludes(excluds);
+			}
+			//设置循环策略为忽略，避免死循环
+			cfg.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);
+			JSONObject jsonObject = JSONObject.fromObject(obj, cfg);
+			returnJson.append(jsonObject.toString()+StringVeriable.STR_SPLIT);
+		}
+		if(values.size()>0){
+			returnJson.deleteCharAt(returnJson.length()-1);
+		}
+		returnJson.append("]");
+		return returnJson.toString();
 	}
 
 	/**

@@ -18,6 +18,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import com.desktop.annotation.FieldInfo;
+import com.desktop.annotation.NodeType;
+import com.desktop.constant.TreeNodeType;
 import com.desktop.model.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -31,15 +33,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @GenericGenerator(name = "systemUUID", strategy = "uuid")
 public class Department extends BaseEntity {
 
+	@NodeType(type = TreeNodeType.ID)
 	@FieldInfo(name = "主键", type = "ID")
 	private String deptId;
 
+	@NodeType(type = TreeNodeType.TEXT)
 	@FieldInfo(name = "部门名称")
 	private String deptName;
 
+	@NodeType(type = TreeNodeType.CODE)
 	@FieldInfo(name = "部门编码")
 	private String deptCode;
 
+	@NodeType(type = TreeNodeType.PARENT)
 	private Department parent;
 	private Set<Department> children = new HashSet<Department>();
 
