@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +15,13 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.desktop.constant.StringVeriable;
 import com.desktop.constant.TreeVeriable;
+import com.desktop.model.BaseEntity;
 import com.desktop.model.TreeBaseEntity;
 import com.desktop.model.extjs.JSONTreeNode;
 import com.desktop.service.CommonService;
+import com.desktop.utils.DateUtil;
 import com.desktop.utils.JsonBuilder;
 import com.desktop.utils.ModelUtil;
 import com.desktop.utils.StringUtil;
@@ -104,14 +108,52 @@ public abstract class BaseAction extends ActionSupport implements
 	 * 默认的更新
 	 */
 	public void doUpdate() {
-
+		Object entity = getModel();
+		try {
+			if (entity instanceof BaseEntity) {
+				buildModelModifyInfo((BaseEntity) entity);
+			} else {
+				logger.error("实体信息获取错误");
+				toWrite(jsonBuilder.returnFailureJson("'传入的实体信息错误'"));
+				return;
+			}
+			entity = commonService.formUpdate(entity);
+			toWrite(jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		} catch (Exception e) {
+			logger.error("更新方法出错，错误信息" + e.getMessage());
+			toWrite(jsonBuilder.returnFailureJson("'更新方法出错，错误信息"
+					+ e.getMessage() + "'"));
+		}
 	}
 
 	/**
 	 * 默认的删除方法
 	 */
 	public void doRemove() {
-
+		Object entity = getModel();
+		try {
+			if (StringUtil.isNotEmpty(ids)) {
+				String[] idArray = ids.split(StringVeriable.STR_SPLIT);
+				String idsStr = StringUtil.fromArrayToStr(idArray);
+				if (StringUtil.isEmpty(pkName)) {
+					pkName = ModelUtil.getClassPkName(entity.getClass());
+				}
+				if (StringUtil.isEmpty(pkName)) {
+					toWrite(jsonBuilder.returnFailureJson("'得到类主键名失败'"));
+					return;
+				}
+				commonService
+						.deleteBatchById(entity.getClass(), pkName, idsStr);
+				toWrite(jsonBuilder.returnSuccessJson("'" + idArray.length
+						+ "条记录被删除'"));
+			} else {
+				toWrite(jsonBuilder.returnFailureJson("'传入ids为空'"));
+			}
+		} catch (Exception e) {
+			logger.error("删除失败，失败信息:" + e.getMessage());
+			toWrite(jsonBuilder.returnFailureJson("'删除失败，失败信息:"
+					+ e.getMessage() + "'"));
+		}
 	}
 
 	/**
@@ -125,7 +167,19 @@ public abstract class BaseAction extends ActionSupport implements
 	 * 根据实体主键值获取实体信息
 	 */
 	public void getInfoById() {
-
+		Object entity = getModel();
+		try {
+			if (StringUtil.isEmpty(pkValue)) {
+				toWrite(jsonBuilder.returnFailureJson("'得到类主键值失败'"));
+				return;
+			}
+			entity = commonService.findById(entity.getClass(), pkValue);
+			toWrite(jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		} catch (Exception e) {
+			logger.error("获取实体信息失败，错误信息" + e.getMessage());
+			toWrite(jsonBuilder.returnFailureJson("'获取实体信息失败，错误信息"
+					+ e.getMessage() + "'"));
+		}
 	}
 
 	/**
@@ -140,20 +194,21 @@ public abstract class BaseAction extends ActionSupport implements
 					.equalsIgnoreCase(TreeVeriable.ROOT))) {
 				node = TreeVeriable.ROOT;
 			}
-			//得到表名
-			String entityName=c.getSimpleName();
-			//得到模版类
-			JSONTreeNode template=ModelUtil.getJSONTreeNodeTemplate(c);
-			//递归查询出集合
-			List<JSONTreeNode> lists=commonService.getTreeList(node, entityName, whereSql, template);
-			//构建成树形节点对象
-			JSONTreeNode root=commonService.buildJSONTreeNode(lists, node);
-			if(node.equalsIgnoreCase(TreeVeriable.ROOT)){
-				strData=jsonBuilder.buildList(root.getChildren(), excludes);
-			}else{
-				List<JSONTreeNode> alist=new ArrayList<JSONTreeNode>();
+			// 得到表名
+			String entityName = c.getSimpleName();
+			// 得到模版类
+			JSONTreeNode template = ModelUtil.getJSONTreeNodeTemplate(c);
+			// 递归查询出集合
+			List<JSONTreeNode> lists = commonService.getTreeList(node,
+					entityName, whereSql, template);
+			// 构建成树形节点对象
+			JSONTreeNode root = commonService.buildJSONTreeNode(lists, node);
+			if (node.equalsIgnoreCase(TreeVeriable.ROOT)) {
+				strData = jsonBuilder.buildList(root.getChildren(), excludes);
+			} else {
+				List<JSONTreeNode> alist = new ArrayList<JSONTreeNode>();
 				alist.add(root);
-				strData=jsonBuilder.buildList(root.getChildren(), excludes);	
+				strData = jsonBuilder.buildList(root.getChildren(), excludes);
 			}
 			toWrite(strData);
 		}
@@ -186,24 +241,24 @@ public abstract class BaseAction extends ActionSupport implements
 	 * 
 	 * @param model
 	 */
-	// protected void buildModelCreateInfo(BaseEntity entity){
-	// //登录人信息获取
-	//
-	// //登录人所属部门获取
-	// entity.setCreateTime(DateUtil.formatDateTime(new Date()));
-	//
-	// }
+	protected void buildModelCreateInfo(BaseEntity entity) {
+		// 登录人信息获取
+
+		// 登录人所属部门获取
+		entity.setCreateTime(DateUtil.formatDateTime(new Date()));
+	}
+
 	/**
 	 * 构建修改的实体信息
 	 * 
 	 * @param model
 	 */
-	// protected void buildModelModifyInfo(BaseEntity entity){
-	// //登录人信息获取
-	//
-	// //登录人所属部门获取
-	// entity.setModifyTime(DateUtil.formatDateTime(new Date()));
-	// }
+	protected void buildModelModifyInfo(BaseEntity entity) {
+		// 登录人信息获取
+
+		// 登录人所属部门获取
+		entity.setModifyTime(DateUtil.formatDateTime(new Date()));
+	}
 
 	/** ------------结束封装通用方法------------------ */
 

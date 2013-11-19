@@ -71,7 +71,7 @@ public interface CommonService {
 	 * @param entity
 	 * @return
 	 */
-	// public Object formUpdate(Object entity);
+	 public Object formUpdate(Object entity);
 
 	/**
 	 * 删除一个实体

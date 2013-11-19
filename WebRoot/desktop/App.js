@@ -43,7 +43,9 @@ Ext.define('MyDesktop.App', {
                 model: 'Ext.ux.desktop.ShortcutModel',
                 data: [
                 	{ name: '基础组件', iconCls: 'accordion-shortcut', module: 'acc-win',controller:'core.test.controller.TestController',viewIconCls:'user-girl',xtype:'testpanel' },
-                    { name: 'Notepad', iconCls: 'notepad-shortcut', module: 'notepad',controller:'',viewIconCls:'connect' }
+                    { name: 'Notepad', iconCls: 'notepad-shortcut', module: 'notepad',controller:'',viewIconCls:'connect' },
+                    { name: '部门人员管理', iconCls: 'customers',viewIconCls:"icon_customers",xtype:"rbac.mainlayout",controller:"core.rbac.user.controller.DeptUserController",module:"deptusermainview"}
+                    
                 ]
             }),
 

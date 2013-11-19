@@ -65,7 +65,7 @@
 	<!-- 配置SessionFactory -->
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
-		 <property name="packagesToScan">
+	    <property name="packagesToScan">
 			<list>
 				<value>com.*.model</value>
 				<value>com.*.*.model</value>
@@ -75,19 +75,22 @@
 		</property>
 		
 		
-		<!-- 	<property name="annotatedClasses">
+		<!--        <property name="annotatedClasses">
 				 <list>
-					   <value>com.platform.menu.model.Menu</value>
+					   <value>com.desktop.rbac.model.Department</value>
+					   <value>com.desktop.rbac.model.EndUser</value>
+					   <value>com.desktop.rbac.model.Permission</value>
+					   <value>com.desktop.rbac.model.Role</value>
 				 </list>
-			   </property> -->
+			   </property> --> 
 		 
 		<property name="hibernateProperties">
 			<props>
-				<!-- 
+				 
 				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop> 
-				-->
+				
 				<!-- 定义数据库方言 -->
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<!-- <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop> -->
 
 				<!-- 输出sql -->
 				<prop key="hibernate.show_sql">true</prop>

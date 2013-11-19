@@ -20,7 +20,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import com.desktop.annotation.FieldInfo;
 import com.desktop.annotation.NodeType;
 import com.desktop.constant.TreeNodeType;
-import com.desktop.model.BaseEntity;
+import com.desktop.model.TreeBaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @GenericGenerator(name = "systemUUID", strategy = "uuid")
-public class Department extends BaseEntity {
+public class Department extends TreeBaseEntity {
 
 	@NodeType(type = TreeNodeType.ID)
 	@FieldInfo(name = "主键", type = "ID")

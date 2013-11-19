@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.desktop.constant.NodeType;
 import com.desktop.dao.CommonDao;
 import com.desktop.model.extjs.JSONTreeNode;
+import com.desktop.utils.EntityUtil;
+import com.desktop.utils.ModelUtil;
 import com.desktop.utils.StringUtil;
 
 /**
@@ -18,7 +21,8 @@ import com.desktop.utils.StringUtil;
  *         <p>
  *         2013年9月25日 下午5:06:20
  */
-@Service
+@Service("commonService")
+@Transactional
 public class CommonServiceImpl implements CommonService {
 
 	@Autowired
@@ -56,15 +60,15 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 //	@Override
-//	public Object formUpdate(Object entity) {
-//		String keyName = ModelUtil.getClassPkName(entity.getClass());
-//		String keyValue = (String) EntityUtil.getPropertyValue(entity, keyName);
-//		// 获取当前需要更新的实体
-//		Object obj = commonDao.findById(entity.getClass(), keyValue);
-//		obj = EntityUtil.copyNewField(obj, entity);
-//		obj = commonDao.update(obj);
-//		return obj;
-//	}
+	public Object formUpdate(Object entity) {
+		String keyName = ModelUtil.getClassPkName(entity.getClass());
+		String keyValue = (String) EntityUtil.getPropertyValue(entity, keyName);
+		// 获取当前需要更新的实体
+		Object obj = commonDao.findById(entity.getClass(), keyValue);
+		obj = EntityUtil.copyNewField(obj, entity);
+		obj = commonDao.update(obj);
+		return obj;
+	}
 
 	@Override
 	public void delete(Object entity) {
@@ -176,11 +180,18 @@ public class CommonServiceImpl implements CommonService {
 			node.setNodeInfo((String)obj[4]);
 			node.setNodeInfoType((String)obj[5]);
 			node.setParent((String)obj[6]);
-			if(StringUtil.isNotEmpty((String)obj[7])){
-				node.setOrderIndex(Integer.parseInt((String)obj[7]));
+			if(StringUtil.isNotEmpty((obj[7])+"")){
+				node.setOrderIndex(Integer.parseInt(obj[7]+""));
 			}
 			if(StringUtil.isNotEmpty(template.getIcon())){
 				node.setIcon((String)obj[8]);
+				if(StringUtil.isNotEmpty(template.getIcon())){
+					node.setDisabled(Boolean.parseBoolean(obj[9].toString()));
+				}
+			}else{
+				if(StringUtil.isNotEmpty(template.getIcon())){
+					node.setDisabled(Boolean.parseBoolean(obj[8].toString()));
+				}
 			}
 			chilrens.add(node);			
 		}

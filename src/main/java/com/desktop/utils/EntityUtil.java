@@ -1,6 +1,10 @@
 package com.desktop.utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
+
+import com.desktop.model.BaseEntity;
 
 /**
  * 反射工具类
@@ -76,8 +80,8 @@ public class EntityUtil {
 	 * @param keyName
 	 * @param args
 	 */
-	public void invokeSetMethod(Object model, String keyName, Object[] args) {
-		String setMethodName = "set" + keyName.substring(0).toUpperCase()
+	public static void invokeSetMethod(Object model, String keyName, Object[] args) {
+		String setMethodName = "set" + keyName.substring(0,1).toUpperCase()
 				+ keyName.substring(1);
 		invokeMethod(model, setMethodName, args);
 	}
@@ -89,10 +93,27 @@ public class EntityUtil {
 	 * @param proName
 	 * @return
 	 */
-	public Object getPropertyValue(Object model, String proName) {
-		String getMethodName = "get" + proName.substring(0).toUpperCase()
+	public static Object getPropertyValue(Object model, String proName) {
+		String getMethodName = "get" + proName.substring(0,1).toUpperCase()
 				+ proName.substring(1);
 		Object obj = invokeMethod(model, getMethodName, null);
+		return obj;
+	}
+	
+	public static Object copyNewField(Object obj,Object entity){
+		Field[] fields=ModelUtil.getClassFields(entity.getClass(), false);
+		for(Field f:fields){
+			Object value=getPropertyValue(entity,f.getName());
+				if(value!=null && !(value instanceof BaseEntity) && !(value instanceof Collection)){
+					invokeSetMethod(obj, f.getName(), new Object[]{value});
+				}else if(value!=null && value instanceof BaseEntity){
+					String pkName=ModelUtil.getClassPkName(value.getClass());
+					String sid=(String) getPropertyValue(value, pkName);
+					if(StringUtil.isNotEmpty(sid)){
+						invokeSetMethod(obj, f.getName(), new Object[]{value});
+					}
+				}
+		}
 		return obj;
 	}
 }

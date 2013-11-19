@@ -35,5 +35,20 @@
 	 		<result type="plainText" /> 
 	 	</action>
     </package>
-	 <!-- <include file="struts/struts-*.xml"/> -->
+    <package name="rbac" namespace="/rbac" extends="pc-default">
+	 	<action name="permAction" class="permAction">
+			<result type="plainText" /> 
+		</action>
+	 	<action name="userAction" class="userAction">
+			<result type="plainText" /> 
+		</action>
+	 	<action name="roleAction" class="roleAction">
+			<result type="plainText" /> 
+		</action>
+	 	<action name="deptAction" class="deptAction">
+			<result type="plainText" /> 
+		</action>
+    </package>
+
+	<!-- <include file="struts/struts-*.xml"/> -->
 </struts>
