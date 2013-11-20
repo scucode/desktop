@@ -16,6 +16,7 @@
 	<script type="text/javascript" src="/extjs/shared/examples.js"></script>
 	<script type="text/javascript" src="/extjs/ext-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="/core/coreApp/util/comm.js"></script>
+	<script type="text/javascript" src="/core/coreApp/util/OverrideUtil.js"></script>
 	<script type="text/javascript" src="/core/loader.js"></script> 
 	<script type="text/javascript" src="/core/app.js"></script> 
 </head>

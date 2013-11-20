@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.desktop.action.BaseAction;
+import com.desktop.rbac.model.Department;
 import com.desktop.rbac.model.EndUser;
 
 @Controller("userAction")
@@ -16,6 +17,10 @@ public class UserAction extends BaseAction {
 	
 	@Override
 	public Object getModel() {
+		String deptId = request.getParameter("foreignKey");
+		Department dept = new Department();
+		dept.setDeptId(deptId);
+		endUser.setDepartment(dept);
 		return endUser;
 	}
 

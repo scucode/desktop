@@ -94,14 +94,49 @@ public abstract class BaseAction extends ActionSupport implements
 	 * 默认的读取方法
 	 */
 	public void load() {
-		logger.debug("默认的读取方法");
+		Object entity = getModel();
+		try {
+			StringBuffer hql = new StringBuffer("from "
+					+ entity.getClass().getSimpleName() + " where 1=1");
+			StringBuffer countHql = new StringBuffer("select count(*) from "
+					+ entity.getClass().getSimpleName() + " where 1=1");
+			hql.append(whereSql);
+			hql.append(orderSql);
+			countHql.append(whereSql);
+			List<?> lists = commonService.queryByHql(hql.toString(), start,
+					limit);
+			Integer count = commonService.getCount(countHql.toString());
+			strData = jsonBuilder.buildObjListToJson(new Long(count), lists,
+					true);
+			toWrite(strData);
+		} catch (Exception e) {
+			logger.error("默认读取方法出错，错误信息：" + e.getMessage());
+		}
 	}
 
 	/**
 	 * 默认的保存方法
 	 */
 	public void doSave() {
+		Object entity = getModel();
+		try {
+			if (entity instanceof BaseEntity) {
+				buildModelCreateInfo((BaseEntity) entity);
+			} else {
+				logger.error("实体信息获取错误");
+				toWrite(jsonBuilder.returnFailureJson("'传入的实体信息错误'"));
+				return;
+			}
+			// 构建创建信息
 
+			// 保存实体
+			entity = commonService.save(entity);
+			toWrite(jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		} catch (Exception e) {
+			logger.error("保存方法出错，错误信息" + e.getMessage());
+			toWrite(jsonBuilder.returnFailureJson("'保存方法出错，错误信息"
+					+ e.getMessage() + "'"));
+		}
 	}
 
 	/**
@@ -160,7 +195,16 @@ public abstract class BaseAction extends ActionSupport implements
 	 * 默认的表格的更新方法
 	 */
 	public void doUpdateList() {
-
+		try {
+			String[] updateSqls = jsonBuilder.jsonSqlToString(strData);
+			commonService.executeBatchHql(updateSqls);
+			toWrite(jsonBuilder.returnSuccessJson("'" + updateSqls.length
+					+ "条记录被更新'"));
+		} catch (Exception e) {
+			logger.error("批量更新失败，错误信息:" + e.getMessage());
+			toWrite(jsonBuilder.returnFailureJson("'批量更新失败，错误信息："
+					+ e.getMessage() + "'"));
+		}
 	}
 
 	/**
