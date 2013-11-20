@@ -44,7 +44,8 @@ Ext.define('MyDesktop.App', {
                 data: [
                 	{ name: '基础组件', iconCls: 'accordion-shortcut', module: 'acc-win',controller:'core.test.controller.TestController',viewIconCls:'user-girl',xtype:'testpanel' },
                     { name: 'Notepad', iconCls: 'notepad-shortcut', module: 'notepad',controller:'',viewIconCls:'connect' },
-                    { name: '部门人员管理', iconCls: 'customers',viewIconCls:"icon_customers",xtype:"rbac.mainlayout",controller:"core.rbac.user.controller.DeptUserController",module:"deptusermainview"}
+                    { name: '部门人员管理', iconCls: 'accordion-shortcut',viewIconCls:"icon_customers",xtype:"rbac.mainlayout",controller:"core.rbac.user.controller.DeptUserController",module:"deptusermainview"},
+                    { name: '角色权限管理', iconCls: 'customers',viewIconCls:"icon_admin",xtype:"role.mainlayout",controller:"core.rbac.role.controller.RolePermController",module:"rolepermmainview"}
                     
                 ]
             }),

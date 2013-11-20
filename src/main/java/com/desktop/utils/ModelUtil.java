@@ -93,7 +93,7 @@ public class ModelUtil {
 	 * @return
 	 */
 	public static String getClassPkName(Class<?> clazz) {
-		Field[] fields = getClassFields(clazz, true);
+		Field[] fields = getClassFields(clazz, false);
 		String pkName = "";
 		for (Field f : fields) {
 			FieldInfo fieldInfo = f.getAnnotation(FieldInfo.class);

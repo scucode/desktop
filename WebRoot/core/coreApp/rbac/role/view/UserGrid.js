@@ -1,0 +1,46 @@
+Ext.define("core.rbac.role.view.UserGrid",{
+	extend:"Ext.grid.Panel",
+	alias:"widget.role.usergrid",
+	tbar:[
+		{xtype:'button',text:'添加人员',ref:'addUser',iconCls:'table_add'},
+		{xtype:'button',text:'移除人员',ref:'removeUser',iconCls:'table_remove'}
+	],
+	selModel:{
+		selType:"checkboxmodel"
+	},
+	columns:[{
+		xtype:"rownumberer",
+		width : 35,
+		text :'No.',
+		align : 'center'
+	},{
+		text:"主键",
+		dataIndex:"userId",
+		hidden:true
+	},{
+		text:"姓名",
+		dataIndex:"username"
+	},{
+		text:"编码",
+		dataIndex:"userCode"	
+	},{
+		text:"密码",
+		dataIndex:"password",
+		hidden:true
+	},{
+		text:"性别",
+		dataIndex:"sex",
+		width:80
+	},{
+		text:"出生日期",
+		dataIndex:"birthday",
+		width:150
+	}],
+	store:"core.rbac.role.store.UserStore",
+	bbar:{
+		xtype:'pagingtoolbar',
+		store:'core.rbac.role.store.UserStore',
+		dock:'bottom',
+		displayInfo:true
+	}
+});
