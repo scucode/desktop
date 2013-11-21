@@ -23,7 +23,7 @@ public class VDeptUser extends TreeBaseEntity {
 	@FieldInfo(name="图标")
 	private String icon;
 	@NodeType(type=TreeNodeType.PARENT)
-	@FieldInfo(name="图标")
+	@FieldInfo(name="父节点")
 	private Department parent;
 	public String getId() {
 		return id;

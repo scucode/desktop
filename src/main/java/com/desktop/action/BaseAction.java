@@ -81,7 +81,7 @@ public abstract class BaseAction extends ActionSupport implements
 	/** 传输字符串 */
 	protected String strData;
 	/** 为了json排除的字段 */
-	protected String excludes; // checked
+	protected String excludes = ""; // checked
 
 	protected String node;
 

@@ -5,7 +5,8 @@ Ext.define("core.rbac.role.controller.RolePermController", {
 		messageUtil:"core.util.MessageUtil",
 		formUtil:"core.util.FormUtil",
 		treeUtil:"core.util.TreeUtil",
-		gridActionUtil:"core.util.GridActionUtil"
+		gridActionUtil:"core.util.GridActionUtil",
+		queryUtil:"core.util.QueryUtil"
     },
 
 	init : function() {
@@ -125,7 +126,8 @@ Ext.define("core.rbac.role.controller.RolePermController", {
 						config:{
 							url:"/rbac/deptUserAction!getTree.do",
 							params:{
-								whereSql:" and 1=1"
+								whereSql:" and 1=1",
+								expanded:true
 							}
 						},
 						callback:function(win,records){
@@ -135,6 +137,8 @@ Ext.define("core.rbac.role.controller.RolePermController", {
 							Ext.each(records,function(rec){
 								ids.push(rec.get("id"));
 							});
+							console.log("roleid:" + role.get("id"));
+							console.log("ids:" + ids.join(","));
 							var resObj=self.ajax({url:"/rbac/roleAction!addUsers.do",params:{roleId:role.get("id"),ids:ids.join(",")}});
 								if(resObj.success){
 									var proxy=userGrid.getStore().getProxy();

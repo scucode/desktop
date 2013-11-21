@@ -146,6 +146,9 @@ public class ModelUtil {
 			if(TreeNodeType.PARENT.equals(nodeType.type())) {
 				template.setParent(f.getName());
 			}
+			if(TreeNodeType.DISABLED.equals(nodeType.type())) {
+				template.setHref(f.getName());
+			}
 		}
 		return template;
 	}

@@ -48,6 +48,9 @@
 	 	<action name="deptAction" class="deptAction">
 			<result type="plainText" /> 
 		</action>
+	 	<action name="deptUserAction" class="deptUserAction">
+			<result type="plainText" /> 
+		</action>
     </package>
 
 	<!-- <include file="struts/struts-*.xml"/> -->
