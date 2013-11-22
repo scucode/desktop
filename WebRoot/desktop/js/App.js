@@ -53,17 +53,24 @@ Ext.define('Ext.ux.desktop.App', {
         desktopCfg = me.getDesktopConfig();
 
         var items = desktopCfg.shortcuts.data.items;
-        var menus = new Array();
-        Ext.each(items,function(item) {
-        	var obj = {};
-        	obj.text = item.data.name,
-        	obj.iconCls=item.data.viewIconCls;
-			obj.handler=function(){
-	        	me.desktop.onShortcutItemClick(null,item);
-		    }
-		    menus.push(obj);
-        });
+        //得到工具类
+       	var menuUtil=Ext.create("core.util.MenuUtil");
+       	//得到按钮的数据集
+       	var menuTreeStore=comm.get("menuTreeStore");
+       	//构建出任务的menu的数据
+       	var menus=menuUtil.buildStartMenu(menuTreeStore.getRootNode(),me);
+//        var menus = new Array();
+//        Ext.each(items,function(item) {
+//        	var obj = {};
+//        	obj.text = item.data.name,
+//        	obj.iconCls=item.data.viewIconCls;
+//			obj.handler=function(){
+//	        	me.desktop.onShortcutItemClick(null,item);
+//		    }
+//		    menus.push(obj);
+//        });
         
+        //赋值操作
         desktopCfg.taskbarConfig.startConfig.menu=menus;
         
         //任务栏图标改造结束

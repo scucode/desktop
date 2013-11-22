@@ -34,6 +34,9 @@
 	 	<action name="modelAction" class="modelAction">
 	 		<result type="plainText" /> 
 	 	</action>
+	 	<action name="menuAction" class="menuAction">
+	 		<result type="plainText" /> 
+	 	</action>
     </package>
     <package name="rbac" namespace="/rbac" extends="pc-default">
 	 	<action name="permAction" class="permAction">

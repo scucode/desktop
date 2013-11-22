@@ -236,7 +236,8 @@ public abstract class BaseAction extends ActionSupport implements
 			// 得到根节点ID
 			if (!(StringUtil.isNotEmpty(node) && node
 					.equalsIgnoreCase(TreeVeriable.ROOT))) {
-				node = TreeVeriable.ROOT;
+//				node = TreeVeriable.ROOT;
+				node = "root";
 			}
 			// 得到表名
 			String entityName = c.getSimpleName();

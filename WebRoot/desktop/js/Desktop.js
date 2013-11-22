@@ -61,11 +61,11 @@ Ext.define('Ext.ux.desktop.Desktop', {
      */
     shortcutTpl: [
         '<tpl for=".">',
-            '<div class="ux-desktop-shortcut" id="{name}-shortcut">',
-                '<div class="ux-desktop-shortcut-icon {iconCls}">',
-                    '<img src="',Ext.BLANK_IMAGE_URL,'" title="{name}">',
+            '<div class="ux-desktop-shortcut" id="{text}-shortcut">',
+                '<div class="ux-desktop-shortcut-icon accordion-shortcut">',
+                    '<img src="',Ext.BLANK_IMAGE_URL,'" title="{text}">',
                 '</div>',
-                '<span class="ux-desktop-shortcut-text">{name}</span>',
+                '<span class="ux-desktop-shortcut-text">{text}</span>',
             '</div>',
         '</tpl>',
         '<div class="x-clear"></div>'
@@ -196,25 +196,31 @@ Ext.define('Ext.ux.desktop.Desktop', {
 		//做自己想做的事情，提升速度的关键
     	var me = this;
     	var win = null;
-    	win=Ext.getCmp(record.data.module);
+    	win=Ext.getCmp(record.data.id + "_win");
+    	if(record.get("nodeInfoType") == "MENU") {
+    		alert("点击的是菜单类型，暂无实现！");
+    		return false;
+    	}
 		if(!win){
-			var controller = coreApp.getController(record.data.controller);
+			var nodeInfo = record.data.nodeInfo;
+			var config = nodeInfo.split(",");
+			var controller = coreApp.getController(config[1]);
 			if(!controller.inited) {
 				controller.init();
 				controller.inited = true;
 			}
 			win = me.createWindow({
-				title: record.data.name,
-				id: record.data.module,
+				title: record.data.test,
+				id: record.data.id + "_win",
 				width: comm.get("resolutionWidth")*0.7,
                 height: comm.get("resolutionHeight")*0.7,
-                iconCls: record.data.viewIconCls,
+                iconCls: "accordion-shortcut",
                 border: false,
                 hideMode: 'offsets',
                 closable:true,
                 closeAction:"hide",
                 layout:"fit",
-                items:{xtype: record.data.xtype}
+                items:{xtype: config[0]}
 			});
 		}
     	//-------------------------------------

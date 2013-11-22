@@ -32,6 +32,12 @@ Ext.define('MyDesktop.App', {
     getDesktopConfig: function () {
         var me = this, ret = me.callParent();
 
+        //加载按钮信息
+        var menuUtil = Ext.create("core.util.MenuUtil");
+        menuUtil.initMenu();
+        var menuTreeStore=comm.get("menuTreeStore");
+		var moduleData=menuUtil.buildMenuData(menuTreeStore.getRootNode());
+        
         return Ext.apply(ret, {
             //cls: 'ux-desktop-black',
 
@@ -40,14 +46,17 @@ Ext.define('MyDesktop.App', {
             ],
 
             shortcuts: Ext.create('Ext.data.Store', {
-                model: 'Ext.ux.desktop.ShortcutModel',
-                data: [
-                	{ name: '基础组件', iconCls: 'accordion-shortcut', module: 'acc-win',controller:'core.test.controller.TestController',viewIconCls:'user-girl',xtype:'testpanel' },
-                    { name: 'Notepad', iconCls: 'notepad-shortcut', module: 'notepad',controller:'',viewIconCls:'connect' },
-                    { name: '部门人员管理', iconCls: 'accordion-shortcut',viewIconCls:"icon_customers",xtype:"rbac.mainlayout",controller:"core.rbac.user.controller.DeptUserController",module:"deptusermainview"},
-                    { name: '角色权限管理', iconCls: 'customers',viewIconCls:"icon_admin",xtype:"role.mainlayout",controller:"core.rbac.role.controller.RolePermController",module:"rolepermmainview"}
-                    
-                ]
+            	model: factory.ModelFactory.getModelByName("com.desktop.model.extjs.JSONTreeNode","checked").modelName,
+                data: moduleData
+//                model: 'Ext.ux.desktop.ShortcutModel',
+//                data: [
+//                	{ name: '基础组件', iconCls: 'accordion-shortcut', module: 'acc-win',controller:'core.test.controller.TestController',viewIconCls:'user-girl',xtype:'testpanel' },
+//                    { name: 'Notepad', iconCls: 'notepad-shortcut', module: 'notepad',controller:'',viewIconCls:'connect' },
+//                    { name: '部门人员管理', iconCls: 'accordion-shortcut',viewIconCls:"icon_customers",xtype:"rbac.mainlayout",controller:"core.rbac.user.controller.DeptUserController",module:"deptusermainview"},
+//                    { name: '角色权限管理', iconCls: 'customers',viewIconCls:"icon_admin",xtype:"role.mainlayout",controller:"core.rbac.role.controller.RolePermController",module:"rolepermmainview"},
+//                    { name: '菜单管理', iconCls: 'customers',viewIconCls:"icon_admin",xtype:"menu.mainlayout",controller:"core.sys.menu.controller.MenuController",module:"menummainview"}
+//                    
+//                ]
             }),
 
             wallpaper: 'desktop/wallpapers/Blue-Sencha.jpg',
