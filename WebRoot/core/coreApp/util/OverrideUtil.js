@@ -39,3 +39,58 @@ Ext.override(Ext.button.Button,{
         }
     }
 });
+
+/**附件字段的改造*/
+Ext.override(Ext.form.field.File,{  
+	setReadOnly : function(readOnly){
+		var me = this;
+		if(me.buttonEl)me.buttonEl.setVisible(!readOnly);//隐藏浏览按钮
+        me.callParent(arguments);
+	},
+	buttonText: '浏览',
+	setValue : function(v){
+        var me = this,inputEl = me.inputEl;
+		var data = {docName : ''};
+		if(!Ext.isEmpty(v)){
+			//截取文件名
+			var index = v.lastIndexOf('/');
+			if(index == -1){
+				index = v.lastIndexOf('\\');
+			}
+			var fn = v.substring(index+1,v.length);
+			data.docName=fn;
+			
+		}
+		v = Ext.value(v,'');
+		data.address=v;
+		//如果没有附件，则以自己本身的值作为路径
+		data.address = Ext.value(data.address,v);
+		me.fileData = data;
+        if (inputEl && me.emptyText && !Ext.isEmpty(value)) {
+            inputEl.removeCls(me.emptyCls);
+        }
+		if(inputEl){
+			inputEl.dom.value = Ext.value(data.docName,v);
+		}
+        me.callParent(arguments);
+        me.applyEmptyText();
+	},
+	afterRender: function(){
+		var me = this;
+        me.callParent();
+        //下载链接
+		var html = "<a style='color : red;' href = '#' target='_black'></a>";
+		
+		me.hiddenEl = me.bodyEl.insertHtml('afterBegin',html,true);
+		me.inputEl.dom.onclick = function(){
+			if(me.fileData && !Ext.isEmpty(me.fileData.address)){
+				window.open(me.fileData.address);
+			}
+		};
+		me.inputEl.dom.style.textDecoration = 'underline';
+		me.inputEl.dom.style.color = 'blue';
+    },
+    getText : function(){
+    	return this.fileData.docName;
+    }
+});

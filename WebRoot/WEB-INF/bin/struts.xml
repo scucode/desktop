@@ -25,7 +25,9 @@
 					<param name="logCategory">org.apache.commons.logging.impl.Log4JLogger</param>
             	</interceptor-ref>
             	<interceptor-ref name="defaultStack" />
+            	<interceptor-ref name="uploadable" />
          	</interceptor-stack>
+         	<interceptor name="uploadable" class="com.desktop.interceptor.FileUploadInterceptor"></interceptor>
     	</interceptors>
    		<default-interceptor-ref name="defaultStack" />
     </package>    
