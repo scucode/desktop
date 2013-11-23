@@ -162,6 +162,9 @@ public class CommonServiceImpl implements CommonService {
 		if(StringUtil.isNotEmpty(template.getHref())){
 			sql.append(",t."+template.getHref());
 		}
+		if(StringUtil.isNotEmpty(template.getBigIcon())){
+			sql.append(",t."+template.getBigIcon());
+		}
 		sql.append(" from "+tableName+" t where 1=1");
 		if(StringUtil.isNotEmpty(whereSql)){
 			sql.append(whereSql);
@@ -190,10 +193,20 @@ public class CommonServiceImpl implements CommonService {
 				node.setIcon((String)obj[8]);
 				if(StringUtil.isNotEmpty(template.getHref())){
 					node.setDisabled(Boolean.parseBoolean(obj[9].toString()));
+					if(StringUtil.isNotEmpty(template.getBigIcon())){
+						node.setBigIcon((String)obj[10]);
+					}
+				}else if(StringUtil.isNotEmpty(template.getBigIcon())){
+					node.setBigIcon((String)obj[9]);
 				}
 			}else{
 				if(StringUtil.isNotEmpty(template.getIcon())){
 					node.setDisabled(Boolean.parseBoolean(obj[8].toString()));
+					if(StringUtil.isNotEmpty(template.getBigIcon())){
+						node.setBigIcon((String)obj[9]);
+					}
+				}else if(StringUtil.isNotEmpty(template.getBigIcon())){
+					node.setBigIcon((String)obj[8]);
 				}
 			}
 			chilrens.add(node);			

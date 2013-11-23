@@ -160,7 +160,7 @@ Ext.define('Ext.ux.desktop.TaskBar', {
 
     addTaskButton: function(win) {
         var config = {
-            iconCls: win.iconCls,
+            icon: win.icon,
             enableToggle: true,
             toggleGroup: 'all',
             width: 140,
@@ -191,7 +191,20 @@ Ext.define('Ext.ux.desktop.TaskBar', {
         }
         return found;
     },
-
+    //得到指定任务栏按钮
+	getTaskButton:function(btn){
+		 var found, me = this;
+       		 me.windowBar.items.each(function (item) {
+            if (item === btn) {
+                found = item;
+            }
+            return !found;
+        });
+//        if (found) {
+//            me.windowBar.remove(found);
+//        }
+        return found;
+	},
     setActiveButton: function(btn) {
         if (btn) {
             btn.toggle(true);

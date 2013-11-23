@@ -12,9 +12,8 @@
  */
 Ext.define('Ext.ux.desktop.Desktop', {
     extend: 'Ext.panel.Panel',
-
+	
     alias: 'widget.desktop',
-
     uses: [
         'Ext.util.MixedCollection',
         'Ext.menu.Menu',
@@ -62,8 +61,8 @@ Ext.define('Ext.ux.desktop.Desktop', {
     shortcutTpl: [
         '<tpl for=".">',
             '<div class="ux-desktop-shortcut" id="{text}-shortcut">',
-                '<div class="ux-desktop-shortcut-icon accordion-shortcut">',
-                    '<img src="',Ext.BLANK_IMAGE_URL,'" title="{text}">',
+                '<div class="ux-desktop-shortcut-icon style:\"background-image:{bigIcon}\"">',
+                    '<img src="{bigIcon}" title="{text}">',
                 '</div>',
                 '<span class="ux-desktop-shortcut-text">{text}</span>',
             '</div>',
@@ -128,6 +127,11 @@ Ext.define('Ext.ux.desktop.Desktop', {
             style: {
                 position: 'absolute'
             },
+            //换行的改动
+             listeners:{
+             	 viewready:me.initShortcut,
+                 resize:me.initShortcut
+             },
             x: 0, y: 0,
             tpl: new Ext.XTemplate(me.shortcutTpl)
         };
@@ -191,52 +195,83 @@ Ext.define('Ext.ux.desktop.Desktop', {
     },
 
     onShortcutItemClick: function (dataView, record) {
-    	//-------------------------------------
-    	//改造desktop内置的创建窗体方法，使得动态加载窗体   
-		//做自己想做的事情，提升速度的关键
+    	/**
+    	 * 做自己想做的事情，提升速度的关键
+    	 */
     	var me = this;
-    	var win = null;
-    	win=Ext.getCmp(record.data.id + "_win");
-    	if(record.get("nodeInfoType") == "MENU") {
-    		alert("点击的是菜单类型，暂无实现！");
-    		return false;
-    	}
-		if(!win){
-			var nodeInfo = record.data.nodeInfo;
-			var config = nodeInfo.split(",");
-			var controller = coreApp.getController(config[1]);
-			if(!controller.inited) {
-				controller.init();
-				controller.inited = true;
+    	var win=null;
+    	var desktopUtil=Ext.create("core.util.DesktopUtil");
+ 		var items={};
+ 		var id=record.get("id")+"_win";
+ 		var width=comm.get("resolutionWidth")*0.7;
+ 		var height=comm.get("resolutionHeight")*0.7;
+        if(record.get("nodeInfoType")=="MENU"){
+        	id="folderview_win";
+        	width=comm.get("resolutionWidth")*0.5;
+        	height=comm.get("resolutionHeight")*0.4;
+        }
+        win=me.getWindow(id);//不再用Ext.getCmp()
+        if(win && me.taskbar.getTaskButton(win.taskButton)){
+        	desktopUtil.loadFolderData(record,win,me);
+        	return;
+        }
+        if(!win){
+	        items=desktopUtil.getMenuItems(record,me);
+        	var options={
+				 title: record.data.text,
+	             width: width,
+	             height: height,
+	             icon: record.get("icon"),
+	             id:id,
+	             border: false,
+	             nodeId:record.data.id,
+	             hideMode: 'offsets',
+	             layout:"fit",
+	             items:items
+			};
+			if(record.get("nodeInfoType")=="MENU"){
+				options=Ext.apply(options,{
+					tbar:[{
+						xtype:"button",
+						text:"<b>"+record.data.text+"</b>",
+						handler:function(btn){
+							while(btn.nextSibling()){
+								btn.ownerCt.remove(btn.nextSibling());
+							}
+							desktopUtil.loadFolderData(record,win,me);
+						}
+					}]
+				})
 			}
-			win = me.createWindow({
-				title: record.data.test,
-				id: record.data.id + "_win",
-				width: comm.get("resolutionWidth")*0.7,
-                height: comm.get("resolutionHeight")*0.7,
-                iconCls: "accordion-shortcut",
-                border: false,
-                hideMode: 'offsets',
-                closable:true,
-                closeAction:"hide",
-                layout:"fit",
-                items:{xtype: config[0]}
-			});
-		}
-    	//-------------------------------------
-
+			win=me.createWindow(options);
+        }else if(win){
+        	if(record.get("nodeInfoType")=="MENU"){
+        		desktopUtil.loadFolderData(record,win,me);
+        	}
+        }
         if (win) {
-            me.restoreWindow(win);
+        	// 任务栏菜单处理
+        	if(!me.taskbar.getTaskButton(win.taskButton)){
+        		me.addTaskButton(win);
+        	}
+        	win.show();
+//            me.restoreWindow(win);
         }
     },
 
     onWindowClose: function(win) {
         var me = this;
-        me.windows.remove(win);
+//        me.windows.remove(win);
+        win.hide();
         me.taskbar.removeTaskButton(win.taskButton);
         me.updateActiveWindow();
     },
-
+    //添加任务菜单
+	addTaskButton:function(win){
+		var me=this;
+		win.taskButton = me.taskbar.addTaskButton(win);
+        win.animateTarget = win.taskButton.el;
+	},
     //------------------------------------------------------
     // Window context menu handlers
 
@@ -317,30 +352,28 @@ Ext.define('Ext.ux.desktop.Desktop', {
             }
         });
     },
-
+	//创建窗体
     createWindow: function(config, cls) {
         var me = this, win, cfg = Ext.applyIf(config || {}, {
                 stateful: false,
                 isWindow: true,
                 constrainHeader: true,
                 minimizable: true,
-                maximizable: true
+                maximizable: true,
+                closeAction:"hide" //el is null的解决方法
             });
 
         cls = cls || Ext.window.Window;
         win = me.add(new cls(cfg));
-
-        me.windows.add(win);
-
-        win.taskButton = me.taskbar.addTaskButton(win);
-        win.animateTarget = win.taskButton.el;
-
+        //windows是键值对集合    id为key，win为value
+        me.windows.add(win.id,win);
         win.on({
             activate: me.updateActiveWindow,
             beforeshow: me.updateActiveWindow,
             deactivate: me.updateActiveWindow,
             minimize: me.minimizeWindow,
-            destroy: me.onWindowClose,
+//            destroy: me.onWindowClose,
+            beforeclose:me.onWindowClose,
             scope: me
         });
 
@@ -358,18 +391,20 @@ Ext.define('Ext.ux.desktop.Desktop', {
         });
 
         // replace normal window close w/fadeOut animation:
-        win.doClose = function ()  {
-            win.doClose = Ext.emptyFn; // dblclick can call again...
-            win.el.disableShadow();
-            win.el.fadeOut({
-                listeners: {
-                    afteranimate: function () {
-                        win.destroy();
-                    }
-                }
-            });
-        };
-
+        //取代正常的窗口关闭
+//        win.doClose = function ()  {
+//            win.doClose = Ext.emptyFn; // dblclick can call again...
+//            win.el.disableShadow();
+//            win.el.fadeOut({
+//                listeners: {
+//                	//动画结束之后
+//                    afteranimate: function () {
+//                        win.destroy();
+//                    }
+//                }
+//            });
+//        };
+		
         return win;
     },
 
@@ -464,5 +499,31 @@ Ext.define('Ext.ux.desktop.Desktop', {
         }
 
         me.taskbar.setActiveButton(activeWindow && activeWindow.taskButton);
-    }
+    },
+    initShortcut : function() {
+         var btnHeight = 64;
+         var btnWidth = 64;
+         var btnPadding = 30;
+         var col = {index : 1,x : btnPadding};
+         var row = {index : 1,y : btnPadding};
+         var bottom;
+         var numberOfItems = 0;
+         var taskBarHeight = Ext.query(".ux-taskbar")[0].clientHeight + 40;
+         var bodyHeight = Ext.getBody().getHeight() - taskBarHeight;
+         var items = Ext.query(".ux-desktop-shortcut");
+
+         for (var i = 0, len = items.length; i < len; i++) {
+             numberOfItems += 1;
+             bottom = row.y + btnHeight;
+             if (((bodyHeight < bottom) ? true : false) && bottom > (btnHeight + btnPadding)) {
+                 numberOfItems = 0;
+                 col = {index : col.index++,x : col.x + btnWidth + btnPadding};
+                 row = {index : 1,y : btnPadding};
+             }
+             Ext.fly(items[i]).setXY([col.x, row.y]);
+             row.index++;
+             row.y = row.y + btnHeight + btnPadding;
+         }
+     }
+
 });

@@ -149,6 +149,9 @@ public class ModelUtil {
 			if(TreeNodeType.DISABLED.equals(nodeType.type())) {
 				template.setHref(f.getName());
 			}
+			if(TreeNodeType.BIGICON.equals(nodeType.type())) {
+				template.setBigIcon(f.getName());
+			}
 		}
 		return template;
 	}

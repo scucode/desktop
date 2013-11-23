@@ -19,6 +19,7 @@ public class JSONTreeNode {
 	private String hrefTarget;
 	private String cls;
 	private String icon;
+	private String bigIcon;
 	private Boolean expandable = true;
 	private Boolean expanded;
 	private String description;
@@ -181,6 +182,14 @@ public class JSONTreeNode {
 
 	public void setNodeType(String nodeType) {
 		this.nodeType = nodeType;
+	}
+
+	public String getBigIcon() {
+		return bigIcon;
+	}
+
+	public void setBigIcon(String bigIcon) {
+		this.bigIcon = bigIcon;
 	}
 
 }

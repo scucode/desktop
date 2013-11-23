@@ -181,6 +181,7 @@
 }
 
 .ux-desktop-shortcut {
+	float: left;
     cursor: pointer;
     text-align: center;
     padding: 8px;

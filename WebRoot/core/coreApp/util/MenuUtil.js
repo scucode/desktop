@@ -1,8 +1,7 @@
 Ext.define("core.util.MenuUtil",{
-	mixins: {
+	mixins:{
 		suppleUtil:"core.util.SuppleUtil"
 	},
-	
 	/**
 	 * 加载当前登录的人权限按钮
 	 */
@@ -20,7 +19,6 @@ Ext.define("core.util.MenuUtil",{
 		});
 		comm.add("menuTreeStore",menuTreeStore);
 	},
-	
 	/**
 	 * 构建菜单数据
 	 * @param {} node
@@ -33,7 +31,6 @@ Ext.define("core.util.MenuUtil",{
 		});
 		return data;
 	},
-	
 	/**
 	 * 构建开始菜单中的项
 	 * @param {} node
